@@ -35,8 +35,8 @@ const Post = ({ post }) => {
 };
 
 Post.propTypes = {
-  post: PropTypes.string.isRequired, // Adjust the type accordingly
-  setSelectedTab: PropTypes.string.isRequired,
+  post: PropTypes.object.isRequired, // Adjust the type accordingly
+  setSelectedTab: PropTypes.func,
 };
 
 export default Post;

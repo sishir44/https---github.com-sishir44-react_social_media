@@ -1,10 +1,11 @@
-import { createContext, useReducer } from "react";
 import PropTypes from "prop-types";
+import { createContext, useReducer } from "react";
 
 // create context
 export const PostList = createContext({
   postList: [],
   addPost: () => {},
+  addFetchPosts: () => {},
   deletePost: () => {},
 });
 
@@ -14,17 +15,39 @@ const postListReducer = (currPostList, action) => {
     newPostList = currPostList.filter(
       (post) => post.id !== action.payload.postId
     );
+  } else if (action.type === "ADD_POST") {
+    newPostList = [action.payload, ...currPostList];
+  } else if (action.type === "FETCH_POSTS") {
+    newPostList = action.payload.posts;
   }
   return newPostList;
 };
 
 const PostListProvider = ({ children }) => {
-  const [postList, dispatchPostList] = useReducer(
-    postListReducer,
-    DEFAULT_POST_LIST
-  );
+  const [postList, dispatchPostList] = useReducer(postListReducer, []);
 
-  const addPost = () => {};
+  const addPost = (userId, postTitle, postBody, reactions, tags) => {
+    dispatchPostList({
+      type: "ADD_POST",
+      payload: {
+        id: Date.now(),
+        title: postTitle,
+        body: postBody,
+        reactions: reactions,
+        userId: userId,
+        tags: tags,
+      },
+    });
+  };
+
+  const addFetchPosts = (posts) => {
+    dispatchPostList({
+      type: "FETCH_POSTS",
+      payload: {
+        posts,
+      },
+    });
+  };
 
   const deletePost = (postId) => {
     dispatchPostList({
@@ -36,34 +59,15 @@ const PostListProvider = ({ children }) => {
   };
 
   return (
-    <PostList.Provider value={{ postList, addPost, deletePost }}>
+    <PostList.Provider value={{ postList, addPost, addFetchPosts, deletePost }}>
       {children}
     </PostList.Provider>
   );
 };
 
-const DEFAULT_POST_LIST = [
-  {
-    id: "1",
-    title: "Hyderabad",
-    body: "Hyderabad is a beautiful city",
-    reactions: 2,
-    userId: "user1",
-    tags: ["Hyd", "500018", "Biryani"],
-  },
-  {
-    id: "2",
-    title: "Hyderabad",
-    body: "Hyderabad is a beautiful city",
-    reactions: 2,
-    userId: "user1",
-    tags: ["Hyd", "500018", "Biryani"],
-  },
-];
-
 PostListProvider.propTypes = {
-  children: PropTypes.string.isRequired, // Adjust the type accordingly
-  setSelectedTab: PropTypes.string.isRequired,
+  children: PropTypes.object.isRequired, // Adjust the type accordingly
+  setSelectedTab: PropTypes.func,
 };
 
 export default PostListProvider;

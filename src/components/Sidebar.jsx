@@ -5,7 +5,7 @@ const SideBar = ({ selectedTab, setSelectedTab }) => {
     <>
       <div
         className="d-flex flex-column flex-shrink-0 p-3 text-white bg-dark sidebar"
-        style={{ width: 280 }}
+        style={{ width: "180px" }}
       >
         <a
           href="/"
@@ -100,7 +100,7 @@ const SideBar = ({ selectedTab, setSelectedTab }) => {
 
 SideBar.propTypes = {
   selectedTab: PropTypes.string.isRequired, // Adjust the type accordingly
-  setSelectedTab: PropTypes.string.isRequired,
+  setSelectedTab: PropTypes.func.isRequired,
 };
 
 export default SideBar;
